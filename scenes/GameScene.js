@@ -241,6 +241,46 @@ class GameScene extends Phaser.Scene {
 
                         this.sound.play("hit");
 
+                        let particles=this.add.particles(
+
+                        enemy.x,
+
+                        enemy.y,
+
+                        "lock",
+
+                        {
+
+                        speed:{
+                        min:50,
+                        max:250
+                        },
+
+                        scale:{
+                        start:0.12,
+                        end:0
+                        },
+
+                        lifespan:500,
+
+                        quantity:15
+
+                        }
+
+                        );
+
+                        this.time.delayedCall(
+
+                        500,
+
+                        ()=>{
+
+                        particles.destroy();
+
+                        }
+
+                        );
+
                         enemy.destroy();
 
                         this.activeWords =
