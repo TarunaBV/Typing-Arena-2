@@ -56,7 +56,7 @@ class GameScene extends Phaser.Scene {
         // WORD COUNTER
         this.counterText = this.add.text(
 
-            window.innerWidth - 180,
+            window.innerWidth - 250,
 
             25,
 
