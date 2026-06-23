@@ -18,6 +18,8 @@ class GameScene extends Phaser.Scene {
 
     create() {
 
+        this.typeSound=this.sound.add("type");
+
         this.cameras.main.setBackgroundColor("#000814");
 
         this.activeWords = [];
@@ -221,9 +223,9 @@ class GameScene extends Phaser.Scene {
 
                 else if(event.key.length===1){
 
-                    this.currentInput +=
+                    this.typeSound.play();
 
-                    event.key.toLowerCase();
+                    this.currentInput += event.key.toLowerCase();
 
                 }
 
@@ -241,43 +243,49 @@ class GameScene extends Phaser.Scene {
 
                         this.sound.play("hit");
 
-                        let particles=this.add.particles(
+                        let particles = this.add.particles(
 
-                        enemy.x,
+                            enemy.x,
 
-                        enemy.y,
+                            enemy.y,
 
-                        "lock",
+                            "lock",
 
-                        {
+                            {
 
-                        speed:{
-                        min:50,
-                        max:250
-                        },
+                                speed:{
 
-                        scale:{
-                        start:0.12,
-                        end:0
-                        },
+                                    min:50,
 
-                        lifespan:500,
+                                    max:250
 
-                        quantity:15
+                                },
 
-                        }
+                                scale:{
+
+                                    start:0.12,
+
+                                    end:0
+
+                                },
+
+                                lifespan:500,
+
+                                quantity:15
+
+                            }
 
                         );
 
                         this.time.delayedCall(
 
-                        500,
+                            500,
 
-                        ()=>{
+                            ()=>{
 
-                        particles.destroy();
+                                particles.destroy();
 
-                        }
+                            }
 
                         );
 
