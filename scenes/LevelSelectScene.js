@@ -42,7 +42,9 @@ class LevelSelectScene extends Phaser.Scene {
 
         let cols = 4;
 
-        let startX = 180;
+        let totalWidth = cols * 220;
+
+        let startX = (window.innerWidth - totalWidth) / 2 + 90;
 
         let startY = 160;
 
