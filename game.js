@@ -2,23 +2,23 @@ const config = {
 
     type: Phaser.AUTO,
 
-    parent:"game-container",
+    parent: "game-container",
+
+    backgroundColor: "#000814",
+
+    scale: {
+
+        mode: Phaser.Scale.RESIZE,
+
+        autoCenter: Phaser.Scale.CENTER_BOTH
+
+    },
 
     width: window.innerWidth,
 
     height: window.innerHeight,
 
-    scale:{
-
-        mode:Phaser.Scale.RESIZE,
-
-        autoCenter:Phaser.Scale.CENTER_BOTH
-
-    },
-
-    backgroundColor:"#000814",
-
-    scene:[
+    scene: [
 
         MenuScene,
 
