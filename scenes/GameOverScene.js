@@ -18,49 +18,49 @@ class GameOverScene extends Phaser.Scene {
 
         this.add.text(
 
-            window.innerWidth / 2,
+            window.innerWidth/2,
 
-            150,
+            120,
 
             "☠ GAME OVER ☠",
 
             {
 
-                fontSize: "60px",
+                fontSize:"60px",
 
-                color: "#ff3333",
+                color:"#ff3333",
 
-                fontStyle: "bold"
+                fontStyle:"bold"
 
             }
 
         ).setOrigin(0.5);
 
-        let retryBtn = this.add.text(
+        let retryBtn=this.add.text(
 
-            window.innerWidth / 2,
+            window.innerWidth/2,
 
-            320,
+            280,
 
             "🔄 RETRY",
 
             {
 
-                fontSize: "36px",
+                fontSize:"36px",
 
-                backgroundColor: "#8b0000",
+                backgroundColor:"#8b0000",
 
-                color: "#ffffff",
+                color:"#ffffff",
 
-                padding: {
+                padding:{
 
-                    left: 20,
+                    left:20,
 
-                    right: 20,
+                    right:20,
 
-                    top: 10,
+                    top:10,
 
-                    bottom: 10
+                    bottom:10
 
                 }
 
@@ -72,31 +72,31 @@ class GameOverScene extends Phaser.Scene {
 
         .setInteractive();
 
-        let menuBtn = this.add.text(
+        let menuBtn=this.add.text(
 
-            window.innerWidth / 2,
+            window.innerWidth/2,
 
-            430,
+            400,
 
             "🏠 MENU",
 
             {
 
-                fontSize: "36px",
+                fontSize:"36px",
 
-                backgroundColor: "#001d3d",
+                backgroundColor:"#001d3d",
 
-                color: "#ffffff",
+                color:"#ffffff",
 
-                padding: {
+                padding:{
 
-                    left: 20,
+                    left:20,
 
-                    right: 20,
+                    right:20,
 
-                    top: 10,
+                    top:10,
 
-                    bottom: 10
+                    bottom:10
 
                 }
 
@@ -107,6 +107,56 @@ class GameOverScene extends Phaser.Scene {
         .setOrigin(0.5)
 
         .setInteractive();
+
+        // Hover effect
+
+        [retryBtn,menuBtn].forEach(btn=>{
+
+            btn.on(
+
+                "pointerover",
+
+                ()=>{
+
+                    this.tweens.add({
+
+                        targets:btn,
+
+                        scaleX:1.1,
+
+                        scaleY:1.1,
+
+                        duration:100
+
+                    });
+
+                }
+
+            );
+
+            btn.on(
+
+                "pointerout",
+
+                ()=>{
+
+                    this.tweens.add({
+
+                        targets:btn,
+
+                        scaleX:1,
+
+                        scaleY:1,
+
+                        duration:100
+
+                    });
+
+                }
+
+            );
+
+        });
 
         retryBtn.on(
 
@@ -120,7 +170,7 @@ class GameOverScene extends Phaser.Scene {
 
                     {
 
-                        level: this.level
+                        level:this.level
 
                     }
 
