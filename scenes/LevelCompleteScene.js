@@ -16,13 +16,14 @@ class LevelCompleteScene extends Phaser.Scene {
 
         this.cameras.main.setBackgroundColor("#000814");
 
+        // Title
         this.add.text(
 
             window.innerWidth / 2,
 
-            140,
+            80,
 
-            "⭐⭐⭐ LEVEL COMPLETE ⭐⭐⭐",
+            "⭐ ⭐ ⭐    LEVEL COMPLETE    ⭐ ⭐ ⭐",
 
             {
 
@@ -34,35 +35,33 @@ class LevelCompleteScene extends Phaser.Scene {
 
             }
 
-        )
+        ).setOrigin(0.5);
 
-        .setOrigin(0.5);
-
+        // Level cleared text
         this.add.text(
 
             window.innerWidth / 2,
 
-            240,
+            170,
 
             `Level ${this.level} Cleared!`,
 
             {
 
-                fontSize: "36px",
+                fontSize: "42px",
 
                 color: "#ffffff"
 
             }
 
-        )
+        ).setOrigin(0.5);
 
-        .setOrigin(0.5);
-
+        // NEXT LEVEL BUTTON
         let nextBtn = this.add.text(
 
             window.innerWidth / 2,
 
-            360,
+            290,
 
             "▶ NEXT LEVEL",
 
@@ -76,13 +75,13 @@ class LevelCompleteScene extends Phaser.Scene {
 
                 padding: {
 
-                    left: 20,
+                    left: 25,
 
-                    right: 20,
+                    right: 25,
 
-                    top: 10,
+                    top: 15,
 
-                    bottom: 10
+                    bottom: 15
 
                 }
 
@@ -94,31 +93,32 @@ class LevelCompleteScene extends Phaser.Scene {
 
         .setInteractive();
 
+        // MENU BUTTON
         let menuBtn = this.add.text(
 
             window.innerWidth / 2,
 
-            470,
+            410,
 
             "🏠 MENU",
 
             {
 
-                fontSize: "32px",
+                fontSize: "34px",
 
-                backgroundColor: "#222222",
+                backgroundColor: "#333333",
 
                 color: "#ffffff",
 
                 padding: {
 
-                    left: 20,
+                    left: 25,
 
-                    right: 20,
+                    right: 25,
 
-                    top: 10,
+                    top: 15,
 
-                    bottom: 10
+                    bottom: 15
 
                 }
 
@@ -130,44 +130,63 @@ class LevelCompleteScene extends Phaser.Scene {
 
         .setInteractive();
 
-        nextBtn.on(
+        // Hover effect for BOTH buttons
+        [nextBtn, menuBtn].forEach(btn => {
 
-            "pointerover",
+            btn.on(
 
-            ()=>{
+                "pointerover",
 
-                nextBtn.setScale(
+                () => {
 
-                    1.1
+                    this.tweens.add({
 
-                );
+                        targets: btn,
 
-            }
+                        scaleX: 1.1,
 
-        );
+                        scaleY: 1.1,
 
-        nextBtn.on(
+                        duration: 100
 
-            "pointerout",
+                    });
 
-            ()=>{
+                }
 
-                nextBtn.setScale(
+            );
 
-                    1
+            btn.on(
 
-                );
+                "pointerout",
 
-            }
+                () => {
 
-        );
+                    this.tweens.add({
 
+                        targets: btn,
+
+                        scaleX: 1,
+
+                        scaleY: 1,
+
+                        duration: 100
+
+                    });
+
+                }
+
+            );
+
+        });
+
+        // Next level button action
         nextBtn.on(
 
             "pointerdown",
 
-            ()=>{
+            () => {
 
+                // Save 3 stars
                 localStorage.setItem(
 
                     `stars_${this.level}`,
@@ -176,27 +195,66 @@ class LevelCompleteScene extends Phaser.Scene {
 
                 );
 
-                this.scene.start(
+                // Unlock next level
+                localStorage.setItem(
 
-                    "GameScene",
+                    "unlockedLevel",
 
-                    {
+                    Math.max(
 
-                        level: this.level + 1
+                        parseInt(
 
-                    }
+                            localStorage.getItem(
+
+                                "unlockedLevel"
+
+                            )
+
+                        ) || 1,
+
+                        this.level + 1
+
+                    )
 
                 );
+
+                // Start next level
+                if (this.level < levels.length) {
+
+                    this.scene.start(
+
+                        "GameScene",
+
+                        {
+
+                            level: this.level + 1
+
+                        }
+
+                    );
+
+                }
+
+                else {
+
+                    this.scene.start(
+
+                        "MenuScene"
+
+                    );
+
+                }
 
             }
 
         );
 
+        // Menu button action
         menuBtn.on(
 
             "pointerdown",
 
-            ()=>{
+            () => {
 
                 this.scene.start(
 
