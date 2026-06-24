@@ -7,7 +7,9 @@ const WHITE = "#ffffff";
 class GameScene extends Phaser.Scene {
 
     constructor() {
+
         super("GameScene");
+
     }
 
     init(data) {
@@ -17,8 +19,6 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
-
-        this.typeSound=this.sound.add("type");
 
         this.cameras.main.setBackgroundColor("#000814");
 
@@ -36,12 +36,14 @@ class GameScene extends Phaser.Scene {
 
         this.wordCount = this.levelData.word_count;
 
-        // LEVEL TEXT
+        this.typeSound = this.sound.add("type");
+
+        // LEVEL
         this.add.text(
 
             30,
 
-            25,
+            20,
 
             `LEVEL ${this.level}`,
 
@@ -60,7 +62,7 @@ class GameScene extends Phaser.Scene {
 
             window.innerWidth - 250,
 
-            25,
+            20,
 
             `Words : 0/${this.wordCount}`,
 
@@ -85,7 +87,7 @@ class GameScene extends Phaser.Scene {
 
             {
 
-                fontSize: "34px",
+                fontSize: "32px",
 
                 color: GREEN,
 
@@ -105,52 +107,11 @@ class GameScene extends Phaser.Scene {
 
             }
 
-        ).setOrigin(0.5);
-
-        // PAUSE BUTTON
-        this.pauseBtn = this.add.text(
-
-            window.innerWidth - 60,
-
-            70,
-
-            "⏸",
-
-            {
-
-                fontSize: "30px",
-
-                color: WHITE
-
-            }
-
         )
 
-        .setInteractive();
+        .setOrigin(0.5);
 
-        this.pauseBtn.on(
-
-            "pointerdown",
-
-            ()=>{
-
-                this.isPaused = !this.isPaused;
-
-                this.pauseBtn.setText(
-
-                    this.isPaused ?
-
-                    "▶" :
-
-                    "⏸"
-
-                );
-
-            }
-
-        );
-
-        // FULLSCREEN
+        // FULLSCREEN BUTTON
         this.fullscreenBtn = this.add.text(
 
             window.innerWidth - 120,
@@ -193,8 +154,95 @@ class GameScene extends Phaser.Scene {
 
         );
 
+        // PAUSE BUTTON
+        this.pauseBtn = this.add.text(
+
+            window.innerWidth - 60,
+
+            70,
+
+            "⏸",
+
+            {
+
+                fontSize: "30px",
+
+                color: WHITE
+
+            }
+
+        )
+
+        .setInteractive();
+
+        this.pauseBtn.on(
+
+            "pointerdown",
+
+            ()=>{
+
+                this.isPaused = !this.isPaused;
+
+                this.pauseBtn.setText(
+
+                    this.isPaused ? "▶" : "⏸"
+
+                );
+
+            }
+
+        );
+
+        // STARS
+        this.stars = [];
+
+        for(let i=0;i<150;i++){
+
+            let star = this.add.circle(
+
+                Phaser.Math.Between(
+
+                    0,
+
+                    window.innerWidth
+
+                ),
+
+                Phaser.Math.Between(
+
+                    0,
+
+                    window.innerHeight
+
+                ),
+
+                Phaser.Math.Between(
+
+                    1,
+
+                    3
+
+                ),
+
+                0xffffff
+
+            );
+
+            star.alpha = Phaser.Math.FloatBetween(
+
+                0.3,
+
+                0.8
+
+            );
+
+            this.stars.push(star);
+
+        }
+
         this.spawnWord();
 
+        // KEYBOARD INPUT
         this.input.keyboard.on(
 
             "keydown",
@@ -209,9 +257,7 @@ class GameScene extends Phaser.Scene {
 
                 if(event.key==="Backspace"){
 
-                    this.currentInput =
-
-                    this.currentInput.slice(
+                    this.currentInput = this.currentInput.slice(
 
                         0,
 
@@ -243,57 +289,54 @@ class GameScene extends Phaser.Scene {
 
                         this.sound.play("hit");
 
-                        let particles = this.add.particles(
+                        // Explosion effect
 
-                            enemy.x,
+                        this.cameras.main.shake(100,0.002);
 
-                            enemy.y,
+                        for(let i=0;i<20;i++){
 
-                            "lock",
+                            let circle=this.add.circle(
 
-                            {
+                                enemy.x,
 
-                                speed:{
+                                enemy.y,
 
-                                    min:50,
+                                Phaser.Math.Between(2,6),
 
-                                    max:250
+                                0x00e5ff
 
-                                },
+                            );
 
-                                scale:{
+                            this.tweens.add({
 
-                                    start:0.12,
+                                targets:circle,
 
-                                    end:0
+                                x:enemy.x+Phaser.Math.Between(-80,80),
 
-                                },
+                                y:enemy.y+Phaser.Math.Between(-80,80),
 
-                                lifespan:500,
+                                alpha:0,
 
-                                quantity:15
+                                scale:0,
 
-                            }
+                                duration:500,
 
-                        );
+                                ease:"Power2",
 
-                        this.time.delayedCall(
+                                onComplete:()=>{
 
-                            500,
+                                    circle.destroy();
 
-                            ()=>{
+                                }
 
-                                particles.destroy();
+                            });
 
-                            }
+                        }
 
-                        );
 
                         enemy.destroy();
 
-                        this.activeWords =
-
-                        this.activeWords.filter(
+                        this.activeWords = this.activeWords.filter(
 
                             e=>e!==enemy
 
@@ -317,11 +360,7 @@ class GameScene extends Phaser.Scene {
 
                         if(this.typedCount>=this.wordCount){
 
-                            this.sound.play(
-
-                                "complete"
-
-                            );
+                            this.sound.play("complete");
 
                             localStorage.setItem(
 
@@ -389,9 +428,7 @@ class GameScene extends Phaser.Scene {
 
             Math.floor(
 
-                Math.random() *
-
-                this.words.length
+                Math.random() * this.words.length
 
             ),
 
@@ -399,57 +436,70 @@ class GameScene extends Phaser.Scene {
 
         )[0];
 
-        let enemy = this.add.text(
+        let style = {
 
-            Phaser.Math.Between(
+            fontSize:"32px",
 
-                100,
+            backgroundColor:RED,
 
-                window.innerWidth - 100
+            color:WHITE,
 
-            ),
+            padding:{
+
+                left:15,
+
+                right:15,
+
+                top:8,
+
+                bottom:8
+
+            }
+
+        };
+
+        // Create temporary text to measure width
+        let tempText = this.add.text(
+
+            0,
 
             0,
 
             word,
 
-            {
+            style
 
-                fontSize: "32px",
+        );
 
-                backgroundColor: RED,
+        let textWidth = tempText.width;
 
-                color: WHITE,
+        tempText.destroy();
 
-                padding: {
+        let x = Phaser.Math.Between(
 
-                    left: 15,
+            textWidth/2 + 20,
 
-                    right: 15,
+            window.innerWidth - textWidth/2 - 20
 
-                    top: 8,
+        );
 
-                    bottom: 8
+        let enemy = this.add.text(
 
-                }
+            x,
 
-            }
+            0,
+
+            word,
+
+            style
 
         );
 
         enemy.word = word;
 
-        enemy.speed =
+        enemy.speed = 1 + (this.level-1)*0.15;
 
-        1 +
-
-        (this.level - 1) * 0.15;
-
-        this.activeWords.push(
-
-            enemy
-
-        );
+        this.activeWords.push(enemy);
 
     }
 
